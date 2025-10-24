@@ -14,6 +14,8 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -75,5 +77,33 @@ public class MainActivityTest {
         onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.city_list)).atPosition(0).check(matches((withText("Edmonton"))));
 
     }
+
+    @Test
+    public void testActivitySwitchMultiple() {
+        // add item to list
+        onView(withId(R.id.button_add)).perform(click());
+        onView(withId(R.id.editText_name)).perform(ViewActions.typeText("Edmonton"));
+        onView(withId(R.id.button_confirm)).perform(click());
+        // click first item in the list
+        onData(is(instanceOf(String.class)))
+                .inAdapterView(withId(R.id.city_list))
+                .atPosition(0)
+                .perform(click());
+
+        // check that cityTextView UI appears
+        onView(withId(R.id.cityTextView))
+                .check(matches(isDisplayed()));
+
+        // check that the city name displayed is consistent
+        onView(withText("Edmonton")).check(matches(isDisplayed()));
+
+        // check that the back button navigates back
+        onView(withId(R.id.backButton)).perform(click());
+        onView(withId(R.id.city_list))
+                .check(matches(isDisplayed()));
+
+
+    }
+
     
 }
